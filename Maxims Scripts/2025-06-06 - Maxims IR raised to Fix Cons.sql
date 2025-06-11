@@ -52,7 +52,7 @@ AS (
 		ON ci.currentsta = cir.id
 	LEFT JOIN applookup_instance ai4
 		ON cir.lkp_status = ai4.id
-	WHERE ci.recordingirecordingd <= '2025-06-02' --DATEADD(qq, DATEDIFF(qq, 0, GETDATE()) - 1, 0)
+	WHERE ci.recordingirecordingd >= '2025-06-02' --DATEADD(qq, DATEDIFF(qq, 0, GETDATE()) - 1, 0)
 		----AND ci.recordingirecordingd  <= DATEADD(dd, -1, DATEADD(qq, DATEDIFF(qq, 0, GETDATE()), 0)))
 		AND (
 			cp.nameforename NOT LIKE 'DummyICABForename'
@@ -72,3 +72,5 @@ WHERE [Location] = 'OneCall'
 		)*/
 	AND team = 'Centre Operations'
 --	and Client_ID ='2415437'
+
+
