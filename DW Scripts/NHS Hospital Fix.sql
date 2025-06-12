@@ -30,35 +30,37 @@ AS (
 		ON h.Hospital = h2.Hospital
 			AND h2.rwn = 1
 	WHERE h.rwn <> 1
-	)/*
+	) /*
 UPDATE autom.PatientActivityDaily
 SET NHSLocation = ul.Main_NHSLocation,
 	HospitalType = ul.Main_HospitalType
 FROM autom.PatientActivityDaily p
 INNER JOIN Update_List ul
 	ON p.Hospital = ul.Hospital*/
+SELECT *
+FROM Hospitals
 
-    select * FROM Hospitals
-		--AND p.NHSLocation = ul.NHSLocation
-		/*
+--AND p.NHSLocation = ul.NHSLocation
+/*
 update autom.PatientActivityDaily
 set NHSLocation = 'Z1R9J'
 where Hospital = 'Dagenham VAS'*/
+UPDATE autom.PatientActivityDaily
+SET NHSLocation = 'NTG0I'
+WHERE Hospital = 'Hemsworth VAS'
 
+UPDATE autom.PatientActivityDaily
+SET NHSLocation = 'S6N8G'
+WHERE Hospital = 'Frimley Green CTC'
 
+UPDATE autom.PatientActivityDaily
+SET NHSLocation = 'A9N6M'
+WHERE Hospital = 'Edmonton CTC'
 
-update autom.PatientActivityDaily
-set NHSLocation = 'NTG0I'
-where Hospital = 'Hemsworth VAS'
+UPDATE autom.PatientActivityDaily
+SET NHSLocation = 'Q3K5B'
+WHERE Hospital = 'Liverpool CTC'
 
-update autom.PatientActivityDaily
-set NHSLocation = 'S6N8G'
-where Hospital = 'Frimley Green CTC'
-
-update autom.PatientActivityDaily
-set NHSLocation = 'A9N6M'
-where Hospital = 'Edmonton CTC'
-
-
-
-
+UPDATE autom.PatientActivityDaily
+SET NHSLocation = 'P9G3I'
+WHERE Hospital = 'Manchester Central CTC'
