@@ -12,9 +12,13 @@ AS (
 		[US].[UniqueID],
 		[US].[ActivityDate],
 		[US].[Activity] US_Activity,
+		us.Fee AS US_Fee,
 		c.Activity AS Same_Day_Consultation_Activity,
+		c.fee AS Same_Day_Consultation_Fee,
 		t.Activity AS Same_Day_Treatment_Activity,
+		t.fee AS Same_Day_Treatment_Fee,
 		na.Activity AS Same_Day_Non_Chargable_Activity,
+		na.fee AS Same_Day_Non_Chargable_Fee,
 		CASE 
 			WHEN c.Activity IS NULL
 				AND t.Activity IS NULL
@@ -88,7 +92,7 @@ AS (
 		--AND us.PatientID = '2412908'
 		--ORDER BY 11 DESC
 	)
-SELECT [m].[PatientID],
+SELECT /*[m].[PatientID],
 	[m].[ReferralID],
 	[m].[ActivityID],
 	[m].[UniqueID],
@@ -99,6 +103,7 @@ SELECT [m].[PatientID],
 	[m].[Same_Day_Treatment_Activity],
 	[m].[Same_Day_Non_Chargable_Activity],
 	[m].[EligibilityContract],
-	[m].[ICB_Name]
+	[m].[ICB_Name]*/
+	*
 FROM main m
 WHERE RowNum = 1
