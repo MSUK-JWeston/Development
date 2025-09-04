@@ -1,4 +1,7 @@
-WITH Cons_Forms --Getting all Consultation Forms Status
+--create view clientportal.Treatment_Booked_No_Consultation as
+
+
+WITH Cons_Forms --Getting all Consultation Forms Status where the referral is created by the API
 AS (
 	SELECT csf.versiondet Form_Version,
 		lkp_progresst.TEXT Form_Status,
@@ -55,13 +58,13 @@ AS (
 		AND sba.appointmen >= DATEADD(MONTH, - 6, cast(getdate() AS DATE))
 		AND ccr.sys_creation_user = 'CareConnectapi'
 	),
-Booked_Treatment -- Getting all Treatment appointments in the future
+Booked_Treatment -- Getting all Treatment appointments in the future when referral created by api
 AS (
 	SELECT cpci.c_val AS Patient_ID,
 		ISNULL(ca.name, cp2.proceduren) AS Activity,
 		lkp_apptstatus.TEXT AS Treatment_Status,
 		CONVERT(DATETIME2, CONVERT(VARCHAR, sba.appointmen, 23) + ' ' + CONVERT(VARCHAR, sba.apptstartt, 8)) AS Treatment_Start_Date_Time,
-		cp.sys_creation_user,
+		--cp.sys_creation_user,
 		sba.care_catsreferral_appointmen referral,
 		ccr.sys_creation_user AS Referral_Created_By
 	FROM schl_booking_appoin sba WITH (NOLOCK)
@@ -73,8 +76,6 @@ AS (
 		ON st.c_procedu = cp2.id -- Planned Procedure
 	LEFT JOIN applookup_instance lkp_apptstatus WITH (NOLOCK)
 		ON sba.lkp_apptstatus = lkp_apptstatus.id -- Appointment Status
-	LEFT JOIN ref.ActivityTypes at WITH (NOLOCK)
-		ON ISNULL(ca.name, cp2.proceduren) = at.Activity -- Activity Types
 	LEFT JOIN core_patient_c_identifi cpci WITH (NOLOCK)
 		ON sba.patient = cpci.id
 			AND cpci.lkp_c_ty = - 1905
@@ -83,26 +84,18 @@ AS (
 	LEFT JOIN care_catsreferral ccr WITH (NOLOCK)
 		ON sba.care_catsreferral_appointmen = ccr.id
 	WHERE sba.appointmen >= cast(GETDATE() AS DATE)
-		AND at.ActivityGroup = 'Treatment'
+		--AND at.ActivityGroup = 'Treatment'
 		AND NOT ISNULL(ca.name, cp2.proceduren) IN ('VAS Treatment', 'VAS Re-op')
 		AND lkp_apptstatus.TEXT = 'Booked'
 		AND ccr.sys_creation_user = 'CareConnectapi'
+		AND ISNULL(ca.name, cp2.proceduren) IN ('STOP <12w (1hr prep)', 'BPAS Cons and Treatment', 'Telemedicine MA', 'MA Treatment', 'Extended MA Treatment', 'Telemedicine Eligibility Check', 'STOP 12+1 to 14+6w (1.5hrs prep)', 'VAS Treatment', 'STOP 22w to 23+6w', 'Failed MA - Repeat Medical', 'STOP 19 to 21+6w', '2nd MA appt', 'STOP 15 to 18+6w (3hrs prep)', 'BPAS Sameday MA Treatment', 'VAS Re-op')
 	)
-SELECT *
-FROM Booked_Treatment
-	/*
 SELECT [bt].[Patient_ID],
 	[bt].[referral] Referral_ID,
-	/*
-	[c].[Cons_Booked_By],
-	[c].[Activity] Cons_Activity,
-	[c].[Cons_Status],
-	[c].[Cons_Activity_Start_Date_Time],*/
 	[bt].[Activity] Treatment_Activity,
 	[bt].[Treatment_Status],
 	[bt].[Treatment_Start_Date_Time]
 FROM Booked_Treatment bt
-LEFT JOIN Cons c
-	ON bt.referral = c.referral
-ORDER BY 5
-*/
+LEFT JOIN Cons_Forms cf
+	ON bt.referral = cf.referral
+WHERE cf.Form_Status IS NULL
